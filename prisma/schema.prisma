@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//npm init -y
+//npm i --save-dev prisma typescript ts-node @types/node nodemon
+//tsconfig.json
+//npx prisma init --datasource-provider postgresql 
+//npx prisma migrate dev 
+//npx prisma generate
+
+model Director {
+  id    String @id @default(uuid())
+  name  String
+  email String
+  directed  Movie[]
+}
+
+model Actor {
+  id            String @id @default(uuid())
+  name          String
+  email         String
+  starredIn     Movie[]
+}
+
+model Movie {
+  id          String @id @default(uuid())
+  title       String
+  director    Director? @relation(fields: [directorId], references: [id])
+  directorId  String?
+  publisher   String
+  genre       Genre  @default(ADVENTURE)
+  actor       Actor[]
+  releaseDate DateTime
+}
+
+enum Genre {
+  DETECTIVE
+  MYSTERY
+  FANTASY
+  ACTION
+  ADVENTURE
+  COMEDY
+}
