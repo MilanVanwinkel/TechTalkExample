@@ -10,27 +10,51 @@ module.exports.getAllMovies = async function(){
     return prisma.movie.findMany();
 }
 
-module.exports.createMovieAsync = async function(title: string, publisher: string) {
+module.exports.createMovieAsync = async function(title: string, publisher: string, genre: Genre, releaseDate: Date) {
     const movie = await prisma.movie.create({
         data: {
             title: title,
             publisher: publisher,
-            genre: Genre.DETECTIVE,
-            releaseDate: '24/11/2008'
+            genre: genre,
+            releaseDate: releaseDate
+        }
+    })
+
+    return movie;
+}
+
+module.exports.getMovieById = async function(movieId: string) {
+    return prisma.movie.findUnique({
+        where: {
+            id: movieId,
+        },
+        select:{
+            title: true,
+            publisher: true,
+            actor: {
+                select: {
+                    name: true,
+                    email: true,
+                }
+            }
         }
     })
 }
 
 
-module.exports.getAllActors = async function(){
-    return prisma.actor.findMany();
-}
-
-module.exports.createActorAsync = async function(name: string, email: string) {
-    const movie = await prisma.actor.create({
+module.exports.addActorToMovie = async function(movieId: string, actorId: string) {
+    const result = prisma.movie.update({
+        where:{
+            id: movieId 
+        },
         data: {
-            name: name,
-            email: email
-        }
+            actor: {
+                connect: {id: actorId}
+            }
+        },
+        include: {
+            actor: true
+        },
     })
+    return result;
 }

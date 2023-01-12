@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser, { BodyParser } from 'body-parser';
 import { movieRoutes } from './routes/movieRoutes';
+import { actorRoutes } from './routes/actorRoutes';
 
 
 const port = 3000;
@@ -22,6 +23,7 @@ class App {
         //this.express.use("/example", exampleRoute);
 
         this.express.use("/movie", movieRoutes)
+        this.express.use("/actor", actorRoutes)
 
         this.express.listen(port, () => {
             console.log(`Example app listening at http://localhost:${port}`);
